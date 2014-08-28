@@ -110,6 +110,7 @@ public class HierachicalTree implements Comparable<HierachicalTree> {
 		for (Iterator<HierachicalTree> it = sons.iterator(); it.hasNext();){
 			HierachicalTree son = it.next();
 			if (son.cntUrls < minimumUrl) {
+				urls.addAll(son.urls);
 				it.remove();
 			}
 		}	
@@ -280,25 +281,6 @@ public class HierachicalTree implements Comparable<HierachicalTree> {
 		return str;
 	}
 	
-	@Override
-	public String toString(){
-		return toString(0);
-	}
-	
-	public static void main(String[] args) throws IOException {
-		try {
-			PropertiesUtil.init();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		PropertiesUtil.loadProperties();
-		String ontologyFile = PropertiesUtil.getProperty("DBpedia_ontology.owl");
-		MyWriter.setFile("result/tree" , false);
-		Map<String, HashSet<String>> subClassMap = SubClassRelationReader.getSubClassOf(ontologyFile);
-		HierachicalTree root = HierachicalTree.getTree(subClassMap);
-		MyWriter.write(root.toString());
-		MyWriter.close();
-	}
 
 	/**
 	 * @return the urls
@@ -310,4 +292,58 @@ public class HierachicalTree implements Comparable<HierachicalTree> {
 	public int getCntUrls(){
 		return cntUrls;
 	}
+	
+	@Override
+	public String toString(){
+		return toString(0);
+	}
+	
+	public static void main(String[] args) throws IOException {
+		HashMap<String, HashSet<String>> typeMap = TypeMapIO.read("result/types");
+		System.out.println(typeMap.size());
+		int cnt = 0;
+		for (HashSet<String> urls:typeMap.values()){
+			cnt += urls.size();
+		}
+		System.out.println(cnt);
+
+		try {
+			PropertiesUtil.init();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		PropertiesUtil.loadProperties();
+		String ontologyFile = PropertiesUtil.getProperty("DBpedia_ontology.owl");
+		Map<String, HashSet<String>> subClassMap = SubClassRelationReader.getSubClassOf(ontologyFile);
+		HierachicalTree root = HierachicalTree.getTree(subClassMap);
+		
+		ArrayList<String> types= new ArrayList<String>(typeMap.keySet());
+		types.removeAll(HierachicalTree.getTypes());
+		for (String type:types) {
+			System.out.println(type);
+		}		
+		
+		root.loadUrls(typeMap);
+		root.countUrls();
+		System.out.println(root.getCntUrls());
+		
+		root.write("result/maintree");
+		root = HierachicalTree.read("result/maintree");
+		root.countUrls();
+		System.out.println(root.getCntUrls());
+		
+		root.cut(100);
+		System.out.println(root.getCntUrls());
+		
+		HierachicalTree[] trees = root.split(new int[] {10,20,30,40});
+		for (HierachicalTree tree:trees) {
+			tree.countUrls();
+			System.out.println(tree.getCntUrls());
+		}
+		
+		trees[0].write("result/splittree1");
+		trees[1].write("result/splittree2");
+
+	}
+
 }
