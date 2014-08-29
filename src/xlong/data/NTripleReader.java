@@ -33,6 +33,8 @@ public class NTripleReader {
 	
 	private StringArrayProcesser stringArrayProcesser;
 	
+	private static final int MAXLINE = 100000000;
+	
 	/**
 	 * Constructor
 	 * 
@@ -123,6 +125,14 @@ public class NTripleReader {
 			System.out.println("Read lines: " + Math.min(cnt, maxNum));
 		}
 		return triples;
+	}
+	
+	public void readAll(String outFile){
+		readAll(outFile, MAXLINE);
+	}
+	
+	public ArrayList<String[]> readAll() {
+		return readAll(MAXLINE);
 	}
 
 	/**

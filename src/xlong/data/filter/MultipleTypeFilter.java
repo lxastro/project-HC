@@ -1,6 +1,6 @@
 package xlong.data.filter;
 
-import xlong.data.SimpleEntity;
+import xlong.data.Entity;
 
 public class MultipleTypeFilter extends EntityFilter {
 
@@ -12,7 +12,7 @@ public class MultipleTypeFilter extends EntityFilter {
 	}
 
 	@Override
-	public boolean filt(SimpleEntity en) {
+	public boolean filt(Entity en) {
 		return en.getTypes() != null && en.getTypes().size() > 1;
 	}
 

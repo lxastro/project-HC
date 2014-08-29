@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Map;
 
 import xlong.data.NTripleReader;
-import xlong.data.SimpleEntity;
+import xlong.data.Entity;
 import xlong.data.SubClassRelationReader;
 import xlong.data.TypeMapIO;
 import xlong.data.UrlTypePairIO;
@@ -54,7 +54,7 @@ public class CombineURLsTypes {
 		String ontologyFile = PropertiesUtil.getProperty("DBpedia_ontology.owl");
 		Map<String, HashSet<String>> subClassMap = SubClassRelationReader.getSubClassOf(ontologyFile);
 		System.out.println("get entities");
-		Collection<SimpleEntity> entities = SimpleEntity.generateEntities(types, urls, subClassMap);
+		Collection<Entity> entities = Entity.generateEntities(types, urls, subClassMap);
 		System.out.println(entities.size());
 		System.out.println("filt entities");
 		
@@ -64,7 +64,7 @@ public class CombineURLsTypes {
 //		System.out.println(entities.size());
 //		entities = SimpleEntity.filtEntities(entities, new SingleTypeFilter());
 		
-		entities = SimpleEntity.filtEntities(entities, new ExistUrlFilter(new SingleTypeFilter()));
+		entities = Entity.filtEntities(entities, new ExistUrlFilter(new SingleTypeFilter()));
 		
 		System.out.println(entities.size());
 //		for (SimpleEntity en:entities) {
@@ -78,7 +78,7 @@ public class CombineURLsTypes {
 //		UrlTypePairIO.write(pairs, "result/pairs.txt");
 		
 		System.out.println("get typeMap");
-		HashMap<String, HashSet<String>> pairs = SimpleEntity.entities2TypeMap(entities);
+		HashMap<String, HashSet<String>> pairs = Entity.entities2TypeMap(entities);
 		System.out.println(pairs.size());
 		System.out.println("write typeMap");
 		TypeMapIO.write(pairs, "result/types");

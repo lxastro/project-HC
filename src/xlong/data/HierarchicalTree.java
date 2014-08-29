@@ -17,8 +17,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 
-import xlong.feature.StringToVectorConverter;
-import xlong.feature.tokenizer.Tokenizer;
+import xlong.converter.StringToSparseVectorConverter;
+import xlong.converter.tokenizer.Tokenizer;
 import xlong.util.MyWriter;
 import xlong.util.PropertiesUtil;
 
@@ -47,7 +47,7 @@ public class HierarchicalTree implements Comparable<HierarchicalTree> {
 	}
 	
 	public void urls2vectors(Tokenizer tokenizer, int wordsToKeep) {
-		vectors = new StringToVectorConverter(tokenizer, wordsToKeep).convert(urls);
+		vectors = new StringToSparseVectorConverter(tokenizer, wordsToKeep).convert(urls);
 		urls = null;
 	}
 	

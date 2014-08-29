@@ -1,6 +1,6 @@
 package xlong.data.filter;
 
-import xlong.data.SimpleEntity;
+import xlong.data.Entity;
 
 public class ExistTypeFilter extends EntityFilter {
 
@@ -14,7 +14,7 @@ public class ExistTypeFilter extends EntityFilter {
 	}
 
 	@Override
-	public boolean filt(SimpleEntity en) {
+	public boolean filt(Entity en) {
 		return en.getTypes() != null;
 	}
 

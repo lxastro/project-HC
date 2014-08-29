@@ -1,7 +1,7 @@
 /**
  * Project : Classify URLs
  */
-package xlong.feature;
+package xlong.converter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,23 +14,28 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import xlong.cell.SparseVector;
+import xlong.cell.instance.MultiLabelInstance;
+import xlong.cell.instances.FlatSparseVectorMultiLabelInstances;
+import xlong.cell.instances.FlatStringMultiLabelInstances;
+import xlong.converter.tokenizer.SingleWordTokenizer;
+import xlong.converter.tokenizer.Tokenizer;
 import xlong.data.TypeMapIO;
-import xlong.feature.tokenizer.SingleWordTokenizer;
-import xlong.feature.tokenizer.Tokenizer;
 
 /**
  * Class to convert string to word vectore
  * 
  * @author Xiang Long (longx13@mails.tsinghua.edu.cn)
  */
-public class StringToVectorConverter {
+public class StringToSparseVectorConverter {
 	
 	private Tokenizer tokenizer;
 	private HashSet<String> stopwords;
 	private boolean s_lowerCaseTokens = true;
 	private boolean s_useStoplist = false;
     private boolean s_OutputCounts = false;
-	private int s_wordsToKeep = 10000;
+	private int s_wordsToKeep = 100000000;
+	private static final int MAXWORDSTOKEEP = 100000000;
 	private int s_minTermFreq = 1;
 
 	private TreeMap<String, Integer> dictionary;
@@ -48,10 +53,14 @@ public class StringToVectorConverter {
 		}
 	}
 	
-	public StringToVectorConverter(Tokenizer tokenizer, int wordsToKeep) {
+	public StringToSparseVectorConverter(Tokenizer tokenizer, int wordsToKeep) {
 		this.wordMap = new TreeMap<String, Count>();
 		this.tokenizer = tokenizer;
 		s_wordsToKeep = wordsToKeep;
+	}
+	
+	public StringToSparseVectorConverter(Tokenizer tokenizer) {
+		this(tokenizer, MAXWORDSTOKEEP);
 	}
 
 	private static void sortArray(int[] array) {
@@ -169,9 +178,27 @@ public class StringToVectorConverter {
 		return vectors;
 	}
 	
+	public FlatSparseVectorMultiLabelInstances convert(FlatStringMultiLabelInstances stringInstances) {
+		FlatSparseVectorMultiLabelInstances sparseVectorInstances = new FlatSparseVectorMultiLabelInstances();
+		stringInstances.startIterator();
+		while (stringInstances.hasNext()) {
+			MultiLabelInstance<String> stringInstance = stringInstances.next();
+			this.buildDictionary (stringInstance.getProperty());
+		}
+		this.determineDictionary();
+		stringInstances.startIterator();
+		while (stringInstances.hasNext()) {
+			MultiLabelInstance<String> stringInstance = stringInstances.next();
+			MultiLabelInstance<SparseVector> sparseVectorInstance = 
+					new MultiLabelInstance<SparseVector>(new SparseVector(this.convert(stringInstance.getProperty())), stringInstance.getLabels());
+			sparseVectorInstances.addInstance(sparseVectorInstance);
+		}	
+		return sparseVectorInstances;
+	}
+	
 	public static void main(String[] args) throws IOException{
 		HashMap<String, HashSet<String>> typeMap = TypeMapIO.read("result/types");
-		StringToVectorConverter converter = new StringToVectorConverter(new SingleWordTokenizer(),1000000);
+		StringToSparseVectorConverter converter = new StringToSparseVectorConverter(new SingleWordTokenizer(),1000000);
 		for (Entry<String, HashSet<String>> en:typeMap.entrySet()) {
 			System.out.println("Bulid: " + en.getKey());
 			for (String url:en.getValue()) {

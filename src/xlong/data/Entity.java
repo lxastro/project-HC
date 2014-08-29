@@ -20,7 +20,7 @@ import xlong.data.filter.EntityFilter;
  * @author Xiang Long (longx13@mails.tsinghua.edu.cn)
  */
 
-public class SimpleEntity {
+public class Entity {
 
 
 	/** The name of a entity */
@@ -39,7 +39,7 @@ public class SimpleEntity {
 	 * @param name
 	 *            the name of the entity.
 	 */
-	public SimpleEntity(String name) {
+	public Entity(String name) {
 		this.name = name;
 		urls = null;
 		types = null;
@@ -111,9 +111,11 @@ public class SimpleEntity {
 			return 0;
 		}
 		HashSet<String> dels = new HashSet<String>();
-		for (String type : types) {
-			if (subClassMap.containsKey(type)) {
-				dels.addAll(subClassMap.get(type));
+		if (subClassMap != null){
+			for (String type : types) {
+				if (subClassMap.containsKey(type)) {
+					dels.addAll(subClassMap.get(type));
+				}
 			}
 		}
 		HashSet<String> newTypes = new HashSet<String>();
@@ -139,31 +141,36 @@ public class SimpleEntity {
 		return urls.size();
 	}
 	
-	public static Collection<SimpleEntity> generateEntities(ArrayList<String[]> types, ArrayList<String[]> urls, Map<String, HashSet<String>> subClassMap) {
-		HashMap<String, SimpleEntity> entityMap = new HashMap<String, SimpleEntity>();
+	public static Collection<Entity> generateEntities(ArrayList<String[]> types, ArrayList<String[]> urls, Map<String, HashSet<String>> subClassMap) {
+		HashMap<String, Entity> entityMap = new HashMap<String, Entity>();
 		for (String[] ss:types){
 			if (!entityMap.containsKey(ss[0])) {
-				entityMap.put(ss[0], new SimpleEntity(ss[0]));
+				entityMap.put(ss[0], new Entity(ss[0]));
 			}
 			entityMap.get(ss[0]).addType(ss[1]);
 		}
 
 		for (String[] ss:urls){
 			if (!entityMap.containsKey(ss[0])) {
-				entityMap.put(ss[0], new SimpleEntity(ss[0]));
+				entityMap.put(ss[0], new Entity(ss[0]));
 			}
 			entityMap.get(ss[0]).addUrl(ss[1]);
 		}
-		for (SimpleEntity en:entityMap.values()){
+		
+		for (Entity en:entityMap.values()){
 			en.filterTypes(subClassMap);
 			en.filterUrls();
 		}
 		return entityMap.values();
 	}
 	
-	public static ArrayList<SimpleEntity> filtEntities(Collection<SimpleEntity> entities, EntityFilter filter) {
-		ArrayList<SimpleEntity> newEntities = new ArrayList<SimpleEntity>();
-		for (SimpleEntity en:entities) {
+	public static Collection<Entity> generateEntities(ArrayList<String[]> types, ArrayList<String[]> urls) {
+		return generateEntities(types, urls, null);
+	}
+	
+	public static ArrayList<Entity> filtEntities(Collection<Entity> entities, EntityFilter filter) {
+		ArrayList<Entity> newEntities = new ArrayList<Entity>();
+		for (Entity en:entities) {
 			if (filter.pipeFilt(en)) {
 				newEntities.add(en);
 			}
@@ -171,7 +178,7 @@ public class SimpleEntity {
 		return newEntities;
 	}
 	
-	public static ArrayList<String[]> entity2UrlTypePairs(SimpleEntity entity) {
+	public static ArrayList<String[]> entity2UrlTypePairs(Entity entity) {
 		ArrayList<String[]> pairs = new ArrayList<String[]>();
 		Collection<String> urls = entity.getUrls();
 		Collection<String> types = entity.getTypes();
@@ -186,17 +193,17 @@ public class SimpleEntity {
 		return pairs;
 	}
 	
-	public static ArrayList<String[]> entities2UrlTypePairs(Collection<SimpleEntity> entities) {
+	public static ArrayList<String[]> entities2UrlTypePairs(Collection<Entity> entities) {
 		ArrayList<String[]> pairs = new ArrayList<String[]>();
-		for (SimpleEntity en:entities) {
+		for (Entity en:entities) {
 			pairs.addAll(entity2UrlTypePairs(en));
 		}
 		return pairs;
 	}
 	
-	public static HashMap<String, HashSet<String>> entities2TypeMap(Collection<SimpleEntity> entities) {
+	public static HashMap<String, HashSet<String>> entities2TypeMap(Collection<Entity> entities) {
 		HashMap<String, HashSet<String>> typeMap = new HashMap<String, HashSet<String>>();
-		for (SimpleEntity entity:entities) {
+		for (Entity entity:entities) {
 			Collection<String> urls = entity.getUrls();
 			Collection<String> types = entity.getTypes();		
 			if (urls == null || types == null) {
@@ -213,9 +220,9 @@ public class SimpleEntity {
 		return typeMap;
 	}
 	
-	public static HashMap<String, TreeSet<String>> entities2UrlMap(Collection<SimpleEntity> entities){
+	public static HashMap<String, TreeSet<String>> entities2UrlMap(Collection<Entity> entities){
 		HashMap<String, TreeSet<String>> urlMap = new HashMap<String, TreeSet<String>>();
-		for (SimpleEntity entity:entities) {
+		for (Entity entity:entities) {
 			Collection<String> urls = entity.getUrls();
 			Collection<String> types = entity.getTypes();		
 			if (urls == null || types == null) {
@@ -238,7 +245,7 @@ public class SimpleEntity {
 	 *            entity to compare with.
 	 * @return this entity equals to entity b or not.
 	 */
-	public boolean equals(SimpleEntity b) {
+	public boolean equals(Entity b) {
 		if (name.equals(b.name))
 			return true;
 		else

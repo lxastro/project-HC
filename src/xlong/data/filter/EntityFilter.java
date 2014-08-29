@@ -1,6 +1,6 @@
 package xlong.data.filter;
 
-import xlong.data.SimpleEntity;
+import xlong.data.Entity;
 
 public abstract class EntityFilter {
 	EntityFilter father;
@@ -9,9 +9,9 @@ public abstract class EntityFilter {
 		this.father = father;
 	}
 	
-	abstract public boolean filt(SimpleEntity en);
+	abstract public boolean filt(Entity en);
 	
-	public boolean pipeFilt(SimpleEntity en) {
+	public boolean pipeFilt(Entity en) {
 		if (father == null) {
 			return filt(en);
 		} else {

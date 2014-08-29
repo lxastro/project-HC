@@ -1,4 +1,4 @@
-package xlong.feature.tokenizer;
+package xlong.converter.tokenizer;
 
 import java.util.List;
 

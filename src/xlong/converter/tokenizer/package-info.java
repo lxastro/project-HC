@@ -5,4 +5,4 @@
  * @author Xiang Long
  *
  */
-package xlong.feature.tokenizer;
+package xlong.converter.tokenizer;

@@ -10,5 +10,9 @@ public class FlatSparseVectorMultiLabelInstances extends FlatInstances<MultiLabe
 	public FlatSparseVectorMultiLabelInstances(List<MultiLabelInstance<SparseVector>> instances) {
 		super(instances);
 	}
+	
+	public FlatSparseVectorMultiLabelInstances() {
+		super();
+	}
 
 }

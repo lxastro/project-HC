@@ -9,13 +9,17 @@ import xlong.cell.instance.Instance;
 abstract public class FlatInstances<XInstance extends Instance<T>, T> extends Instances<XInstance, T> {
 	private List<XInstance> instances;
 	private Iterator<XInstance> it;
-		
+	
 	public FlatInstances (List<XInstance> instances){
 		this.instances = instances;
 	}
 	
 	public FlatInstances (){
 		this(new ArrayList<XInstance>());
+	}
+	
+	public int size(){
+		return instances.size();
 	}
 	
 	public void startIterator(){
