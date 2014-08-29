@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.TreeSet;
 
 import xlong.data.filter.EntityFilter;
 
@@ -210,6 +211,24 @@ public class SimpleEntity {
 			}
 		}
 		return typeMap;
+	}
+	
+	public static HashMap<String, TreeSet<String>> entities2UrlMap(Collection<SimpleEntity> entities){
+		HashMap<String, TreeSet<String>> urlMap = new HashMap<String, TreeSet<String>>();
+		for (SimpleEntity entity:entities) {
+			Collection<String> urls = entity.getUrls();
+			Collection<String> types = entity.getTypes();		
+			if (urls == null || types == null) {
+				continue;
+			}
+			for (String url:urls) {
+				if (!urlMap.containsKey(url)) {
+					urlMap.put(url, new TreeSet<String>());
+				}	
+				urlMap.get(url).addAll(types);
+			}
+		}	
+		return urlMap;
 	}
 
 	/**
