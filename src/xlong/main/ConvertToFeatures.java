@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import xlong.data.HierachicalTree;
+import xlong.data.HierarchicalTree;
 import xlong.data.SubClassRelationReader;
 import xlong.data.TypeMapIO;
 import xlong.util.PropertiesUtil;
@@ -29,10 +29,10 @@ public class ConvertToFeatures {
 		PropertiesUtil.loadProperties();
 		String ontologyFile = PropertiesUtil.getProperty("DBpedia_ontology.owl");
 		Map<String, HashSet<String>> subClassMap = SubClassRelationReader.getSubClassOf(ontologyFile);
-		HierachicalTree root = HierachicalTree.getTree(subClassMap);
+		HierarchicalTree root = HierarchicalTree.getTree(subClassMap);
 		
 		ArrayList<String> types= new ArrayList<String>(typeMap.keySet());
-		types.removeAll(HierachicalTree.getTypes());
+		types.removeAll(HierarchicalTree.getTypes());
 		for (String type:types) {
 			System.out.println(type);
 		}		
@@ -42,15 +42,15 @@ public class ConvertToFeatures {
 		System.out.println(root.getCntUrls());
 		
 		root.write("result/maintree");
-		root = HierachicalTree.read("result/maintree");
+		root = HierarchicalTree.read("result/maintree");
 		root.countUrls();
 		System.out.println(root.getCntUrls());
 		
 		root.cut(100);
 		System.out.println(root.getCntUrls());
 		
-		HierachicalTree[] trees = root.split(new int[] {10,20,30,40});
-		for (HierachicalTree tree:trees) {
+		HierarchicalTree[] trees = root.split(new int[] {10,20,30,40});
+		for (HierarchicalTree tree:trees) {
 			tree.countUrls();
 			System.out.println(tree.getCntUrls());
 		}

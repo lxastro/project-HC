@@ -4,6 +4,8 @@
 package xlong.feature;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -21,7 +23,7 @@ import xlong.feature.tokenizer.Tokenizer;
  * 
  * @author Xiang Long (longx13@mails.tsinghua.edu.cn)
  */
-public class StringToWordVectorConverter {
+public class StringToVectorConverter {
 	
 	private Tokenizer tokenizer;
 	private HashSet<String> stopwords;
@@ -46,7 +48,7 @@ public class StringToWordVectorConverter {
 		}
 	}
 	
-	public StringToWordVectorConverter(Tokenizer tokenizer, int wordsToKeep) {
+	public StringToVectorConverter(Tokenizer tokenizer, int wordsToKeep) {
 		this.wordMap = new TreeMap<String, Count>();
 		this.tokenizer = tokenizer;
 		s_wordsToKeep = wordsToKeep;
@@ -122,7 +124,6 @@ public class StringToWordVectorConverter {
 			if (this.s_lowerCaseTokens == true) {
 				word = word.toLowerCase();
 			}
-			// TODO process word. word = stemmer.stem(word);
 			if (this.s_useStoplist == true) {
 				if (stopwords.contains(word)) {
 					continue;
@@ -143,7 +144,6 @@ public class StringToWordVectorConverter {
 			if (this.s_lowerCaseTokens == true) {
 				word = word.toLowerCase();
 			}
-			// TODO process word. word = stemmer.stem(word);
 			Integer index = dictionary.get(word);
 			if (index != null) {
 				if (s_OutputCounts) {
@@ -161,9 +161,17 @@ public class StringToWordVectorConverter {
 		return vector;
 	}
 	
+	public Collection<Map<Integer, Double>> convert(Collection<String> texts) {
+		ArrayList<Map<Integer, Double>> vectors = new ArrayList<Map<Integer, Double>>();
+		for (String text:texts) {
+			vectors.add(convert(text));
+		}
+		return vectors;
+	}
+	
 	public static void main(String[] args) throws IOException{
 		HashMap<String, HashSet<String>> typeMap = TypeMapIO.read("result/types");
-		StringToWordVectorConverter converter = new StringToWordVectorConverter(new SingleWordTokenizer(),1000000);
+		StringToVectorConverter converter = new StringToVectorConverter(new SingleWordTokenizer(),1000000);
 		for (Entry<String, HashSet<String>> en:typeMap.entrySet()) {
 			System.out.println("Bulid: " + en.getKey());
 			for (String url:en.getValue()) {
