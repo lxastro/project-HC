@@ -8,7 +8,9 @@ public class MultiLabelInstance<T> extends Instance<T> {
 		setProperty(property);
 		this.labels = labels;
 	}
-	public Collection<String> getLabels(){
+
+	@Override
+	public Collection<String> getLabel() {
 		return labels;
 	}
 }

@@ -191,7 +191,7 @@ public class StringToSparseVectorConverter {
 		while (stringInstances.hasNext()) {
 			StringMultiLabelInstance stringInstance = stringInstances.next();
 			SparseVectorMultiLabelInstance sparseVectorInstance = 
-					new SparseVectorMultiLabelInstance(new SparseVector(this.convert(stringInstance.getProperty())), stringInstance.getLabels());
+					new SparseVectorMultiLabelInstance(new SparseVector(this.convert(stringInstance.getProperty())), stringInstance.getLabel());
 			sparseVectorInstances.addInstance(sparseVectorInstance);
 		}	
 		return sparseVectorInstances;

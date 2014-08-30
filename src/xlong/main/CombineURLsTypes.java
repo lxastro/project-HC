@@ -13,13 +13,16 @@ import xlong.data.SubClassRelationReader;
 import xlong.data.TypeMapIO;
 import xlong.data.UrlTypePairIO;
 import xlong.data.filter.ExistTypeFilter;
-import xlong.data.filter.ExistUrlFilter;
 import xlong.data.filter.MultipleTypeFilter;
+import xlong.data.filter.ExistUrlFilter;
 import xlong.data.filter.SingleTypeFilter;
 import xlong.data.processer.SimplifyProcesser;
 import xlong.data.processer.Triple2PairProcesser;
 import xlong.data.processer.UrlNormalizeProcesser;
 import xlong.util.PropertiesUtil;
+
+@SuppressWarnings("unused")
+
 
 public class CombineURLsTypes {
 
