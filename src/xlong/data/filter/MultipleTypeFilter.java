@@ -13,7 +13,7 @@ public class MultipleTypeFilter extends EntityFilter {
 
 	@Override
 	public boolean filt(Entity en) {
-		return en.getTypes() != null && en.getTypes().size() > 1;
+		return en.getTypes().size() > 1;
 	}
 
 }

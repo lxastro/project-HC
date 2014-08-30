@@ -15,7 +15,7 @@ public class ExistTypeFilter extends EntityFilter {
 
 	@Override
 	public boolean filt(Entity en) {
-		return en.getTypes() != null;
+		return en.cntTypes() > 0;
 	}
 
 }

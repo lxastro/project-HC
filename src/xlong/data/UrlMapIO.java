@@ -8,8 +8,11 @@ import java.util.TreeSet;
 import java.util.Map.Entry;
 
 import xlong.util.MyWriter;
+import xlong.util.PropertiesUtil;
 
 public class UrlMapIO {
+	private static final String mySpliter = PropertiesUtil.getProperty("mySpliter");
+	private static final String mySpliterReg = PropertiesUtil.getProperty("mySpliterReg");
 	
 	public static HashMap<String, TreeSet<String>> read(String filePath) throws IOException {
 		HashMap<String, TreeSet<String>> urlMap = new HashMap<String, TreeSet<String>>();
@@ -18,7 +21,7 @@ public class UrlMapIO {
 		String line;
 		while ((line = in.readLine()) != null) {
 			if (line.length() > 0){
-				String[] ss = line.split(" ");
+				String[] ss = line.split(mySpliterReg);
 				TreeSet<String> types = new TreeSet<String>();
 				for (int i = 1; i < ss.length; i++){
 					types.add(ss[i]);
@@ -37,7 +40,7 @@ public class UrlMapIO {
 			TreeSet<String> types = en.getValue();
 			MyWriter.write(url);
 			for (String type:types) {
-				MyWriter.write(" " + type);
+				MyWriter.write(mySpliter + type);
 			}
 			MyWriter.writeln("");
 		}

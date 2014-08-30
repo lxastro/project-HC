@@ -1,7 +1,6 @@
 package xlong.main;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.TreeSet;
@@ -12,6 +11,9 @@ import xlong.converter.StringToSparseVectorConverter;
 import xlong.converter.tokenizer.SingleWordTokenizer;
 import xlong.data.Entity;
 import xlong.data.NTripleReader;
+import xlong.data.UrlMapIO;
+import xlong.data.filter.ExistTypeFilter;
+import xlong.data.filter.ExistUrlFilter;
 import xlong.data.processer.SimplifyProcesser;
 import xlong.data.processer.Triple2PairProcesser;
 import xlong.data.processer.UrlNormalizeProcesser;
@@ -26,27 +28,44 @@ public class FlatClassification {
 		PropertiesUtil.loadProperties();
 		String typeFile = PropertiesUtil.getProperty("DBpedia_instance_types.nt");
 		String urlFile = PropertiesUtil.getProperty("DBpedia_external_links.nt");
+		String typePairFile = "result/typePair.txt";
+		String urlPairFile = "result/urlPair.txt";
+		
+		Collection<Entity> entities;
+		HashMap<String, TreeSet<String>> urlMap;
 		
 		// Read data file.
-		ArrayList<String[]> types = null;
-		ArrayList<String[]> urls = null;
 		NTripleReader typeReader = new NTripleReader(typeFile, new SimplifyProcesser(new UrlNormalizeProcesser(new Triple2PairProcesser())));
-		types = typeReader.readAll();
 		NTripleReader urlReader = new NTripleReader(urlFile, new SimplifyProcesser(new UrlNormalizeProcesser(new Triple2PairProcesser())));
-		urls = urlReader.readAll();
+		typeReader.readAll(typePairFile);
+		urlReader.readAll(urlPairFile);
+//		ArrayList<String[]> types = typeReader.readAll();
+//		ArrayList<String[]> urls = urlReader.readAll();
+
 		
 		// Generate Entities.
 		System.out.println("Generate Entities");
-		Collection<Entity> entities = Entity.generateEntities(types, urls, null);
-		types = null; //Release types;
-		urls = null;  //Release urls;
-		
+//		entities = Entity.generateEntities(types, urls, null);
+//		types = null; //Release types;
+//		urls = null;  //Release urls;
+		entities = Entity.generateEntities(typePairFile, urlPairFile);
+		System.out.println(entities.size());
+		entities = Entity.filtEntities(entities, new ExistUrlFilter(new ExistTypeFilter()));
+		System.out.println(entities.size());
+		Entity.write(entities, "result/entities.txt");	
+		entities = null;
+		entities = Entity.read("result/entities.txt");
+		System.out.println(entities.size());
 		// Get url map.
-		System.out.println("Get URL Map");
-		HashMap<String, TreeSet<String>> urlMap =  Entity.entities2UrlMap(entities);
 		
-//		xlong.data.UrlMapIO.write(urlMap, "result/UrlMap.txt");
-//		HashMap<String, TreeSet<String>> urlMap = xlong.data.UrlMapIO.read("result/UrlMap.txt");
+		System.out.println("Get URL Map");
+		urlMap =  Entity.entities2UrlMap(entities);
+		entities = null;
+		System.out.println(urlMap.size());
+		UrlMapIO.write(urlMap, "result/UrlMap.txt");
+		urlMap = null;
+		urlMap = UrlMapIO.read("result/UrlMap.txt");
+		System.out.println(urlMap.size());
 		
 		
 		// ----------------------------Instance convert---------------------------------
@@ -59,6 +78,7 @@ public class FlatClassification {
 		StringToSparseVectorConverter converter = new StringToSparseVectorConverter(new SingleWordTokenizer());
 		SparseVectorMultiLabelFlatInstances sparseVectorInstances = converter.convert(stringInstances);
 		
+		System.out.println(converter.getDictionary().size());
 		System.out.println(sparseVectorInstances.size());
 		
 	}

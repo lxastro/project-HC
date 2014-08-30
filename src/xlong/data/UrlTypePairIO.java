@@ -6,14 +6,38 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import xlong.util.MyWriter;
+import xlong.util.PropertiesUtil;
 
 public class UrlTypePairIO {
+	private static final String mySpliter = PropertiesUtil.getProperty("mySpliter");
+	private static final String mySpliterReg = PropertiesUtil.getProperty("mySpliterReg");
+	private BufferedReader in;
+	
+	public UrlTypePairIO(String filePath) throws IOException{
+		in = new BufferedReader(new FileReader(filePath));
+	}
+	
+	public void close() throws IOException {
+		in.close();
+	}
+	
+	public String[] next() throws IOException {
+		String line;
+		while ((line = in.readLine()) != null){
+			String[] pair = line.split(mySpliterReg);
+			if (pair.length == 2) {
+				return pair;
+			}		
+		}
+		return null;
+	}
+	
 	public static ArrayList<String[]> read(String filePath) throws IOException {
 		ArrayList<String[]> pairs = new ArrayList<String[]>();
 		BufferedReader in = new BufferedReader(new FileReader(filePath));
 		String line;
 		while ((line = in.readLine()) != null) {
-			String[] pair = line.split(" ");
+			String[] pair = line.split(mySpliterReg);
 			if (pair.length == 2) {
 				pairs.add(pair);
 			}
@@ -25,7 +49,7 @@ public class UrlTypePairIO {
 	public static void write(ArrayList<String[]> pairs, String filePath) {
 		MyWriter.setFile(filePath, false);
 		for (String[] pair:pairs) {
-			MyWriter.writeln(pair[0] + " " +pair[1]);
+			MyWriter.writeln(pair[0] + mySpliter +pair[1]);
 		}
 		MyWriter.close();
 	}

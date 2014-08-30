@@ -15,7 +15,7 @@ public class ExistUrlFilter extends EntityFilter {
 
 	@Override
 	public boolean filt(Entity en) {
-		return en.getUrls() != null;
+		return en.cntUrls() > 0;
 	}
 
 }

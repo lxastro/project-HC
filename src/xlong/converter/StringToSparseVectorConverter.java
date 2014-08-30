@@ -217,4 +217,8 @@ public class StringToSparseVectorConverter {
 			System.out.println();
 		}
 	}
+	
+	public TreeMap<String, Integer> getDictionary() {
+		return dictionary;
+	}
 }

@@ -3,6 +3,9 @@
  */
 package xlong.data;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -11,6 +14,8 @@ import java.util.Map;
 import java.util.TreeSet;
 
 import xlong.data.filter.EntityFilter;
+import xlong.util.MyWriter;
+import xlong.util.PropertiesUtil;
 
 /**
  * Class for merging information of external links and entity types. A simple
@@ -22,7 +27,10 @@ import xlong.data.filter.EntityFilter;
 
 public class Entity {
 
-
+	private static final String mySpliter = PropertiesUtil.getProperty("mySpliter");
+	private static final String mySpliterReg = PropertiesUtil.getProperty("mySpliterReg");
+	private static final String typeStart = "http://dbpedia.org/ontology/";
+	
 	/** The name of a entity */
 	protected String name;
 
@@ -41,8 +49,16 @@ public class Entity {
 	 */
 	public Entity(String name) {
 		this.name = name;
-		urls = null;
-		types = null;
+		urls = new ArrayList<String>();
+		types = new ArrayList<String>();
+	}
+	
+	public int cntTypes() {
+		return types.size();
+	}
+	
+	public int cntUrls() {
+		return urls.size();
 	}
 
 	/**
@@ -77,10 +93,6 @@ public class Entity {
 	 * @param url the Url need to be added.
 	 */
 	public void addUrl(String url) {
-
-		if (urls == null) {
-			urls = new ArrayList<String>();
-		}
 		urls.add(url);
 	}
 
@@ -89,14 +101,16 @@ public class Entity {
 	 * @param typethe type need to be added.
 	 */
 	public void addType(String type) {
-		if (types == null) {
-			types = new ArrayList<String>();
+		if (type.startsWith(typeStart)){
+			types.add(type.substring(typeStart.length()));
 		}
+	}
+	
+	public void addTypeName(String type) {
 		types.add(type);
 	}
 
 	
-	private static final String typeStart = "http://dbpedia.org/ontology/";
 	/**
 	 * Filter types. Exclude types don't start with
 	 * 'http://dbpedia.org/ontology/'. If type A is subclass of type B, then
@@ -106,12 +120,9 @@ public class Entity {
 	 *            the subclass of relationship map.
 	 * @return success or not.
 	 */
-	public int filterTypes(Map<String, HashSet<String>> subClassMap) {
-		if (types == null) {
-			return 0;
-		}
+	public void filterTypes(Map<String, HashSet<String>> subClassMap) {
 		HashSet<String> dels = new HashSet<String>();
-		if (subClassMap != null){
+		if (subClassMap != null) {
 			for (String type : types) {
 				if (subClassMap.containsKey(type)) {
 					dels.addAll(subClassMap.get(type));
@@ -120,25 +131,19 @@ public class Entity {
 		}
 		HashSet<String> newTypes = new HashSet<String>();
 		for (String type : types) {
-			if (!dels.contains(type)
-					&& type.startsWith(typeStart)) {
-				newTypes.add(type.substring(typeStart.length()));
+			if (!dels.contains(type)) {
+				newTypes.add(type);
 			}
 		}
 		types = new ArrayList<String>(newTypes);
-		return types.size();
 	}
 	
-	public int filterUrls() {
-		if (urls == null) {
-			return 0;
-		}
+	public void filterUrls() {
 		HashSet<String> newUrls = new HashSet<String>();
 		for (String url : urls) {
 			newUrls.add(url);
 		}
 		urls = new ArrayList<String>(newUrls);
-		return urls.size();
 	}
 	
 	public static Collection<Entity> generateEntities(ArrayList<String[]> types, ArrayList<String[]> urls, Map<String, HashSet<String>> subClassMap) {
@@ -162,6 +167,40 @@ public class Entity {
 			en.filterUrls();
 		}
 		return entityMap.values();
+	}
+	
+	public static Collection<Entity> generateEntities(String typesFile, String urlsFile, Map<String, HashSet<String>> subClassMap) throws IOException {
+		HashMap<String, Entity> entityMap = new HashMap<String, Entity>();
+		UrlTypePairIO typeIO = new UrlTypePairIO(typesFile);
+		String[] ss;
+		while ((ss = typeIO.next()) != null){
+			if (!entityMap.containsKey(ss[0])) {
+				entityMap.put(ss[0], new Entity(ss[0]));
+			}
+			entityMap.get(ss[0]).addType(ss[1]);
+		}
+		typeIO.close();
+		
+
+		UrlTypePairIO urlIO = new UrlTypePairIO(urlsFile);
+		while ((ss = urlIO.next()) != null){
+			if (!entityMap.containsKey(ss[0])) {
+				entityMap.put(ss[0], new Entity(ss[0]));
+			}
+			entityMap.get(ss[0]).addUrl(ss[1]);
+		}
+		
+		for (Entity en:entityMap.values()){
+			en.filterTypes(subClassMap);
+			en.filterUrls();
+		}	
+		urlIO.close();
+		
+		return entityMap.values();
+	}
+	
+	public static Collection<Entity> generateEntities(String types, String urls) throws IOException {
+		return generateEntities(types, urls, null);
 	}
 	
 	public static Collection<Entity> generateEntities(ArrayList<String[]> types, ArrayList<String[]> urls) {
@@ -222,13 +261,18 @@ public class Entity {
 	
 	public static HashMap<String, TreeSet<String>> entities2UrlMap(Collection<Entity> entities){
 		HashMap<String, TreeSet<String>> urlMap = new HashMap<String, TreeSet<String>>();
+		//int cnt = 0;
 		for (Entity entity:entities) {
 			Collection<String> urls = entity.getUrls();
-			Collection<String> types = entity.getTypes();		
+			Collection<String> types = entity.getTypes();
+			
+//			cnt ++;
+//			System.out.println(cnt + ": " + entity.name + " " + urls.size() + " " + types.size());
 			if (urls == null || types == null) {
 				continue;
 			}
 			for (String url:urls) {
+				//System.out.println(url);
 				if (!urlMap.containsKey(url)) {
 					urlMap.put(url, new TreeSet<String>());
 				}	
@@ -251,6 +295,43 @@ public class Entity {
 		else
 			return false;
 	}
+	
+	public static void write(Collection<Entity>entities, String filePath){
+		//int cnt = 0;
+		MyWriter.setFile(filePath, false);
+		for (Entity en:entities){
+			MyWriter.write(en.toString());
+			//cnt ++;
+			//if (cnt>100) break;
+		}
+		MyWriter.close();
+	}
+	
+	public static Collection<Entity> read(String filePath) throws IOException{
+		BufferedReader in = new BufferedReader(new FileReader(filePath));
+		ArrayList<Entity> entities = new ArrayList<Entity>();
+		
+		String line;
+		while((line = in.readLine()) != null) {
+			Entity entity = new Entity(line);
+			line = in.readLine();
+			if (line == null) break;
+			String[] urls = line.split(mySpliterReg);
+			for (String url:urls){
+				entity.addUrl(url);
+			}
+			line = in.readLine();
+			if (line == null) break;
+			String[] types = line.split(mySpliterReg);
+			for (String type:types){
+				entity.addTypeName(type);
+			}
+			entities.add(entity);
+		}
+		
+		in.close();
+		return entities;
+	}
 
 	/**
 	 * To string method.
@@ -258,13 +339,27 @@ public class Entity {
 	@Override
 	public String toString() {
 		String s = name + "\n";
+		boolean first;
+		first = true;
 		for (String url : urls) {
-			s = s + url + " ";
+			if (!first) {
+				s += mySpliter;
+			} else {
+				first = false;
+			}
+			s = s + url;
 		}
 		s = s + "\n";
+		first = true;
 		for (String type : types) {
-			s = s + type + " ";
+			if (!first) {
+				s += mySpliter;
+			} else {
+				first = false;
+			}
+			s = s + type;
 		}
+		s = s + "\n";
 		return s;
 	}
 }

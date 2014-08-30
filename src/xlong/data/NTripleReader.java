@@ -24,6 +24,7 @@ import xlong.util.PropertiesUtil;
  * @author Xiang Long (longx13@mails.tinghua.edu.cn)
  */
 public class NTripleReader {
+	private static final String mySpliter = PropertiesUtil.getProperty("mySpliter");
 	/** The NxParser used to parse file */
 	protected NxParser nxp;
 	/** Counts of triples */
@@ -100,13 +101,12 @@ public class NTripleReader {
 			System.err.println("MyWriter setFile fail.");
 			System.exit(0);
 		}
-
+		int cnt = 0;
 		String[] ns;
 		while ((ns = getNextTriple()) != null && cnt <= maxNum) {
-			for (int i = 0; i < ns.length-1; i++){
-				MyWriter.write(ns[i] + " ");
-			}
-			MyWriter.writeln(ns[ns.length-1]);
+			MyWriter.writeln(ns[0] + mySpliter + ns[1]);
+			cnt ++;
+			if (cnt % 1000000 == 0) System.out.println(cnt);
 		}
 		if (outputLogs) {
 			System.out.println("Read lines: " + Math.min(cnt, maxNum));
@@ -116,10 +116,13 @@ public class NTripleReader {
 	}
 	
 	public ArrayList<String[]> readAll(int maxNum) {
+		int cnt = 0;
 		String[] ns;
 		ArrayList<String[]> triples = new ArrayList<String[]>();
 		while ((ns = getNextTriple()) != null && cnt <= maxNum) {
 			triples.add(ns);
+			cnt ++;
+			if (cnt % 1000000 == 0) System.out.println(cnt);
 		}
 		if (outputLogs) {
 			System.out.println("Read lines: " + Math.min(cnt, maxNum));
