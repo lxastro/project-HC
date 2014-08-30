@@ -45,6 +45,10 @@ public class FlatClassification {
 		System.out.println("Get URL Map");
 		HashMap<String, TreeSet<String>> urlMap =  Entity.entities2UrlMap(entities);
 		
+//		xlong.data.UrlMapIO.write(urlMap, "result/UrlMap.txt");
+//		HashMap<String, TreeSet<String>> urlMap = xlong.data.UrlMapIO.read("result/UrlMap.txt");
+		
+		
 		// ----------------------------Instance convert---------------------------------
 		//Get FlatStringMultiLabelInstances
 		System.out.println("Get String Instances");
