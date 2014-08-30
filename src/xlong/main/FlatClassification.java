@@ -6,8 +6,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.TreeSet;
 
-import xlong.cell.instances.FlatSparseVectorMultiLabelInstances;
-import xlong.cell.instances.FlatStringMultiLabelInstances;
+import xlong.cell.instances.SparseVectorMultiLabelFlatInstances;
+import xlong.cell.instances.StringMultiLabelFlatInstances;
 import xlong.converter.StringToSparseVectorConverter;
 import xlong.converter.tokenizer.SingleWordTokenizer;
 import xlong.data.Entity;
@@ -48,12 +48,12 @@ public class FlatClassification {
 		// ----------------------------Instance convert---------------------------------
 		//Get FlatStringMultiLabelInstances
 		System.out.println("Get String Instances");
-		FlatStringMultiLabelInstances stringInstances = new FlatStringMultiLabelInstances(urlMap);
+		StringMultiLabelFlatInstances stringInstances = new StringMultiLabelFlatInstances(urlMap);
 		
 		//Convert to FlatSparseVectorMultiLabelInstances
 		System.out.println("Convert");
 		StringToSparseVectorConverter converter = new StringToSparseVectorConverter(new SingleWordTokenizer());
-		FlatSparseVectorMultiLabelInstances sparseVectorInstances = converter.convert(stringInstances);
+		SparseVectorMultiLabelFlatInstances sparseVectorInstances = converter.convert(stringInstances);
 		
 		System.out.println(sparseVectorInstances.size());
 		

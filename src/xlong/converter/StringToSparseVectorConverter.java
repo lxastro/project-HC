@@ -15,9 +15,10 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import xlong.cell.SparseVector;
-import xlong.cell.instance.MultiLabelInstance;
-import xlong.cell.instances.FlatSparseVectorMultiLabelInstances;
-import xlong.cell.instances.FlatStringMultiLabelInstances;
+import xlong.cell.instance.SparseVectorMultiLabelInstance;
+import xlong.cell.instance.StringMultiLabelInstance;
+import xlong.cell.instances.SparseVectorMultiLabelFlatInstances;
+import xlong.cell.instances.StringMultiLabelFlatInstances;
 import xlong.converter.tokenizer.SingleWordTokenizer;
 import xlong.converter.tokenizer.Tokenizer;
 import xlong.data.TypeMapIO;
@@ -178,19 +179,19 @@ public class StringToSparseVectorConverter {
 		return vectors;
 	}
 	
-	public FlatSparseVectorMultiLabelInstances convert(FlatStringMultiLabelInstances stringInstances) {
-		FlatSparseVectorMultiLabelInstances sparseVectorInstances = new FlatSparseVectorMultiLabelInstances();
+	public SparseVectorMultiLabelFlatInstances convert(StringMultiLabelFlatInstances stringInstances) {
+		SparseVectorMultiLabelFlatInstances sparseVectorInstances = new SparseVectorMultiLabelFlatInstances();
 		stringInstances.startIterator();
 		while (stringInstances.hasNext()) {
-			MultiLabelInstance<String> stringInstance = stringInstances.next();
+			StringMultiLabelInstance stringInstance = stringInstances.next();
 			this.buildDictionary (stringInstance.getProperty());
 		}
 		this.determineDictionary();
 		stringInstances.startIterator();
 		while (stringInstances.hasNext()) {
-			MultiLabelInstance<String> stringInstance = stringInstances.next();
-			MultiLabelInstance<SparseVector> sparseVectorInstance = 
-					new MultiLabelInstance<SparseVector>(new SparseVector(this.convert(stringInstance.getProperty())), stringInstance.getLabels());
+			StringMultiLabelInstance stringInstance = stringInstances.next();
+			SparseVectorMultiLabelInstance sparseVectorInstance = 
+					new SparseVectorMultiLabelInstance(new SparseVector(this.convert(stringInstance.getProperty())), stringInstance.getLabels());
 			sparseVectorInstances.addInstance(sparseVectorInstance);
 		}	
 		return sparseVectorInstances;

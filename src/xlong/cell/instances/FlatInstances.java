@@ -6,7 +6,7 @@ import java.util.List;
 
 import xlong.cell.instance.Instance;
 
-abstract public class FlatInstances<XInstance extends Instance<T>, T> extends Instances<XInstance, T> {
+abstract public class FlatInstances<XInstance extends Instance<?>> extends Instances {
 	private List<XInstance> instances;
 	private Iterator<XInstance> it;
 	
