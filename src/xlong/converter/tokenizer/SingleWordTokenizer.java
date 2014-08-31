@@ -5,7 +5,7 @@ import java.util.List;
 
 public class SingleWordTokenizer extends Tokenizer {
 
-	private static final String delimiters = "0-9_\\W";
+	private static final String delimiters = "[0-9_\\W]";
 
 	public SingleWordTokenizer() {
 		super(null);
@@ -28,7 +28,7 @@ public class SingleWordTokenizer extends Tokenizer {
 
 	@Override
 	public List<String> myTokenize(String text) {
-		return filterOutEmptyStrings(text.split("[" + delimiters + "]"));
+		return filterOutEmptyStrings(text.split(delimiters));
 	}
 
 	public static void main(String[] args) {

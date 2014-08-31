@@ -10,4 +10,14 @@ public class SparseVectorMultiLabelInstance extends MultiLabelInstance<SparseVec
 		super(property, labels);
 	}
 
+	@Override
+	public String propertyString() {
+		return getProperty().toString();
+	}
+
+	@Override
+	public void loadProperty(String line) {
+		setProperty(new SparseVector(line));
+	}
+
 }

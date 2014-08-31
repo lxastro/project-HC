@@ -15,5 +15,10 @@ public class StringMultiLabelFlatInstances extends FlatInstances<StringMultiLabe
 		}
 	}
 
+	@Override
+	public StringMultiLabelInstance newInstance() {
+		return new StringMultiLabelInstance(null, null);
+	}
+
 
 }

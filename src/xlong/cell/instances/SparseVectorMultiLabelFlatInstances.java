@@ -6,4 +6,9 @@ public class SparseVectorMultiLabelFlatInstances extends FlatInstances<SparseVec
 	
 	public SparseVectorMultiLabelFlatInstances() {
 	}
+
+	@Override
+	public SparseVectorMultiLabelInstance newInstance() {
+		return new SparseVectorMultiLabelInstance(null, null);
+	}
 }

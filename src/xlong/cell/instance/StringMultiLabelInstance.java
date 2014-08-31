@@ -9,4 +9,14 @@ public class StringMultiLabelInstance extends MultiLabelInstance<String> {
 		super(property, labels);
 	}
 
+	@Override
+	public String propertyString() {
+		return getProperty();
+	}
+
+	@Override
+	public void loadProperty(String line) {
+		setProperty(line);
+	}
+
 }
