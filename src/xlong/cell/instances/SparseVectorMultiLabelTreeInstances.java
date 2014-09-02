@@ -17,7 +17,9 @@ public class SparseVectorMultiLabelTreeInstances extends TreeInstances<SparseVec
 	@Override
 	public void addInstance(SparseVectorMultiLabelInstance instance) {
 		for (String label:instance.getLabel()) {
-			this.getNode(label).add(instance);
+			if (this.getNode(label) != null) {
+				this.getNode(label).add(instance);
+			}
 		}
 	}
 
