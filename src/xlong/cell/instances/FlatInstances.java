@@ -48,7 +48,6 @@ abstract public class FlatInstances<XInstance extends Instance<?>> extends Insta
 		return labels;
 	}
 
-	@Override
 	public void write(String filePath) {
 		MyWriter.setFile(filePath, false);
 		for (XInstance instance:instances) {
@@ -57,7 +56,6 @@ abstract public class FlatInstances<XInstance extends Instance<?>> extends Insta
 		MyWriter.close();
 	}
 
-	@Override
 	public void load(String filePath) throws IOException {
 		BufferedReader in = new BufferedReader(new FileReader(filePath));
 		String pline,lline;

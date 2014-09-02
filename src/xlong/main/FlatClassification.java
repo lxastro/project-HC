@@ -3,17 +3,22 @@ package xlong.main;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.TreeSet;
 import java.util.Map.Entry;
 
+import xlong.cell.OntologyTree;
 import xlong.cell.instance.StringMultiLabelInstance;
 import xlong.cell.instances.SparseVectorMultiLabelFlatInstances;
+import xlong.cell.instances.SparseVectorMultiLabelTreeInstances;
 import xlong.cell.instances.StringMultiLabelFlatInstances;
+import xlong.converter.FlatToTreeInstancesConverter;
 import xlong.converter.StringToSparseVectorConverter;
 import xlong.converter.tokenizer.SingleWordTokenizer;
 import xlong.data.Entity;
 import xlong.data.NTripleReader;
+import xlong.data.SubClassRelationReader;
 import xlong.data.UrlMapIO;
 import xlong.data.filter.ExistTypeFilter;
 import xlong.data.filter.ExistUrlFilter;
@@ -31,6 +36,7 @@ public class FlatClassification {
 		PropertiesUtil.loadProperties();
 		String typeFile = PropertiesUtil.getProperty("DBpedia_instance_types.nt");
 		String urlFile = PropertiesUtil.getProperty("DBpedia_external_links.nt");
+		String ontologyFile = PropertiesUtil.getProperty("DBpedia_ontology.owl");
 		String typePairFile = "result/typePair.txt";
 		String urlPairFile = "result/urlPair.txt";
 		
@@ -94,6 +100,14 @@ public class FlatClassification {
 		sparseVectorInstances = new SparseVectorMultiLabelFlatInstances();
 		sparseVectorInstances.load("result/sparseVectors.txt");
 		System.out.println(sparseVectorInstances.size());
+		
+		Map<String, HashSet<String>> subClassOfMap = SubClassRelationReader.getSubClassOf(ontologyFile);	
+		OntologyTree ontology = OntologyTree.getTree(subClassOfMap);	
+		
+		SparseVectorMultiLabelTreeInstances treeInstances = new SparseVectorMultiLabelTreeInstances();
+		FlatToTreeInstancesConverter.convert(sparseVectorInstances, treeInstances, ontology);
+		
+		System.out.println(treeInstances.size());
 		
 	}
 }

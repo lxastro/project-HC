@@ -47,13 +47,17 @@ public class SubClassRelationReader {
 
 		while (stmts.hasNext()) {
 			final Statement stmt = stmts.next();
-			String sub = stmt.getSubject().toString();
-			String obj = stmt.getObject().toString();
+			String sub = stmt.getSubject().toString().trim();
+			String obj = stmt.getObject().toString().trim();
 			if (!sub.equals(obj) && sub.startsWith(typeStart) && obj.startsWith(typeStart)) {
-				if (!subClassMap.containsKey(sub)) {
-					subClassMap.put(sub.substring(typeStart.length()), new HashSet<String>());
+				sub = sub.substring(typeStart.length());
+				obj = obj.substring(typeStart.length());
+				if (sub.length() != 0 && obj.length() != 0){
+					if (!subClassMap.containsKey(sub)) {
+						subClassMap.put(sub, new HashSet<String>());
+					}
+					subClassMap.get(sub).add(obj);
 				}
-				subClassMap.get(sub.substring(typeStart.length())).add(obj.substring(typeStart.length()));
 			}
 		}
 		return subClassMap;
@@ -74,7 +78,7 @@ public class SubClassRelationReader {
 		}
 		PropertiesUtil.loadProperties();
 		String ontologyFile = PropertiesUtil.getProperty("DBpedia_ontology.owl");
-		MyWriter.setFile("result/ontology.txt" , false);
+		MyWriter.setFile("result/ontologySub.txt" , false);
 		Map<String, HashSet<String>> subClassMap = getSubClassOf(ontologyFile);
 		for (Entry<String, HashSet<String>> e : subClassMap.entrySet()) {
 			String name = e.getKey();
