@@ -19,6 +19,7 @@ import xlong.converter.tokenizer.SingleWordTokenizer;
 import xlong.data.Entity;
 import xlong.data.NTripleReader;
 import xlong.data.SubClassRelationReader;
+import xlong.data.UrlEntityMapIO;
 import xlong.data.UrlMapIO;
 import xlong.data.filter.ExistTypeFilter;
 import xlong.data.filter.ExistUrlFilter;
@@ -42,6 +43,7 @@ public class FlatClassification {
 		
 		Collection<Entity> entities;
 		HashMap<String, TreeSet<String>> urlMap;
+		HashMap<String, TreeSet<Entity>> urlEntityMap;
 		StringMultiLabelFlatInstances stringInstances;
 		SparseVectorMultiLabelFlatInstances sparseVectorInstances;
 		
@@ -64,11 +66,15 @@ public class FlatClassification {
 //		entities = Entity.filtEntities(entities, new ExistUrlFilter(new ExistTypeFilter()));
 //		System.out.println(entities.size());
 //		Entity.write(entities, "result/entities.txt");	
-//		entities = null;
-//		entities = Entity.read("result/entities.txt");
-//		System.out.println(entities.size());
+		entities = null;
+		entities = Entity.read("result/entities.txt");
+		System.out.println(entities.size());
+		
+		// Get UrlEntity map. For test.
+		urlEntityMap = Entity.entities2UrlEntityMap(entities);
+		UrlEntityMapIO.writeOverlapUrl(urlEntityMap, "result/overlap.txt");
+		
 //		// Get url map.
-//		
 //		System.out.println("Get URL Map");
 //		urlMap =  Entity.entities2UrlMap(entities);
 //		entities = null;
@@ -97,17 +103,17 @@ public class FlatClassification {
 //		System.out.println(sparseVectorInstances.next().toString());
 //		
 //		sparseVectorInstances.write("result/sparseVectors.txt");
-		sparseVectorInstances = new SparseVectorMultiLabelFlatInstances();
-		sparseVectorInstances.load("result/sparseVectors.txt");
-		System.out.println(sparseVectorInstances.size());
-		
-		Map<String, HashSet<String>> subClassOfMap = SubClassRelationReader.getSubClassOf(ontologyFile);	
-		OntologyTree ontology = OntologyTree.getTree(subClassOfMap);	
-		
-		SparseVectorMultiLabelTreeInstances treeInstances = new SparseVectorMultiLabelTreeInstances();
-		FlatToTreeInstancesConverter.convert(sparseVectorInstances, treeInstances, ontology);
-		
-		System.out.println(treeInstances.size());
+//		sparseVectorInstances = new SparseVectorMultiLabelFlatInstances();
+//		sparseVectorInstances.load("result/sparseVectors.txt");
+//		System.out.println(sparseVectorInstances.size());
+//		
+//		Map<String, HashSet<String>> subClassOfMap = SubClassRelationReader.getSubClassOf(ontologyFile);	
+//		OntologyTree ontology = OntologyTree.getTree(subClassOfMap);	
+//		
+//		SparseVectorMultiLabelTreeInstances treeInstances = new SparseVectorMultiLabelTreeInstances();
+//		FlatToTreeInstancesConverter.convert(sparseVectorInstances, treeInstances, ontology);
+//		
+//		System.out.println(treeInstances.size());
 		
 	}
 }

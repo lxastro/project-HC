@@ -25,7 +25,7 @@ import xlong.util.PropertiesUtil;
  * @author Xiang Long (longx13@mails.tsinghua.edu.cn)
  */
 
-public class Entity {
+public class Entity implements Comparable<Entity>{
 
 	private static final String mySpliter = PropertiesUtil.getProperty("mySpliter");
 	private static final String mySpliterReg = PropertiesUtil.getProperty("mySpliterReg");
@@ -281,6 +281,29 @@ public class Entity {
 		}	
 		return urlMap;
 	}
+	
+	public static HashMap<String, TreeSet<Entity>> entities2UrlEntityMap(Collection<Entity> entities){
+		HashMap<String, TreeSet<Entity>> urlMap = new HashMap<String, TreeSet<Entity>>();
+		//int cnt = 0;
+		for (Entity entity:entities) {
+			Collection<String> urls = entity.getUrls();
+			Collection<String> types = entity.getTypes();
+			
+//			cnt ++;
+//			System.out.println(cnt + ": " + entity.name + " " + urls.size() + " " + types.size());
+			if (urls == null || types == null) {
+				continue;
+			}
+			for (String url:urls) {
+				//System.out.println(url);
+				if (!urlMap.containsKey(url)) {
+					urlMap.put(url, new TreeSet<Entity>());
+				}	
+				urlMap.get(url).add(entity);
+			}
+		}	
+		return urlMap;
+	}
 
 	/**
 	 * Gets if this entity is equals to another entity or not.
@@ -361,5 +384,10 @@ public class Entity {
 		}
 		s = s + "\n";
 		return s;
+	}
+
+	@Override
+	public int compareTo(Entity o) {
+		return this.name.compareTo(o.name);
 	}
 }
