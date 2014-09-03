@@ -7,11 +7,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import xlong.data.NTripleReader;
 import xlong.data.Entity;
-import xlong.data.SubClassRelationReader;
-import xlong.data.TypeMapIO;
-import xlong.data.UrlTypePairIO;
+import xlong.data.IO.NTripleReader;
+import xlong.data.IO.SubClassRelationReader;
+import xlong.data.IO.TypeMapIO;
+import xlong.data.IO.UrlTypePairIO;
 import xlong.data.filter.ExistTypeFilter;
 import xlong.data.filter.MultipleTypeFilter;
 import xlong.data.filter.ExistUrlFilter;

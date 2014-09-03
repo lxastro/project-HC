@@ -1,7 +1,7 @@
 /**
  * Project : Classify URLs
  */
-package xlong.data;
+package xlong.data.IO;
 
 import java.io.FileInputStream;
 import java.io.IOException;

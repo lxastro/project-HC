@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.TreeSet;
 import java.util.Map.Entry;
 
-import xlong.data.SubClassRelationReader;
+import xlong.data.IO.SubClassRelationReader;
 import xlong.util.MyWriter;
 import xlong.util.PropertiesUtil;
 

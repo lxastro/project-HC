@@ -116,7 +116,6 @@ abstract public class TreeInstances<XInstance extends Instance<?>> extends Insta
 		return instances;
 	}
 
-
 	/**
 	 * @return the name
 	 */

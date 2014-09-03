@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.TreeSet;
 
+import xlong.data.IO.UrlTypePairIO;
 import xlong.data.filter.EntityFilter;
 import xlong.util.MyWriter;
 import xlong.util.PropertiesUtil;

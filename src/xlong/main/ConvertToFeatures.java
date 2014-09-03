@@ -7,8 +7,8 @@ import java.util.HashSet;
 import java.util.Map;
 
 import xlong.data.HierarchicalTree;
-import xlong.data.SubClassRelationReader;
-import xlong.data.TypeMapIO;
+import xlong.data.IO.SubClassRelationReader;
+import xlong.data.IO.TypeMapIO;
 import xlong.util.PropertiesUtil;
 
 public class ConvertToFeatures {

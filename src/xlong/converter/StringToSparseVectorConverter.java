@@ -21,7 +21,7 @@ import xlong.cell.instances.SparseVectorMultiLabelFlatInstances;
 import xlong.cell.instances.StringMultiLabelFlatInstances;
 import xlong.converter.tokenizer.SingleWordTokenizer;
 import xlong.converter.tokenizer.Tokenizer;
-import xlong.data.TypeMapIO;
+import xlong.data.IO.TypeMapIO;
 
 /**
  * Class to convert string to word vectore

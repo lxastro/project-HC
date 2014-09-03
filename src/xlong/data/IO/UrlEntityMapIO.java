@@ -1,9 +1,10 @@
-package xlong.data;
+package xlong.data.IO;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.TreeSet;
 
+import xlong.data.Entity;
 import xlong.util.MyWriter;
 
 public class UrlEntityMapIO {

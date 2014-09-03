@@ -1,4 +1,4 @@
-package xlong.data;
+package xlong.data.IO;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

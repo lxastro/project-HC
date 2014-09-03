@@ -19,6 +19,8 @@ import java.util.TreeSet;
 
 import xlong.converter.StringToSparseVectorConverter;
 import xlong.converter.tokenizer.Tokenizer;
+import xlong.data.IO.SubClassRelationReader;
+import xlong.data.IO.TypeMapIO;
 import xlong.util.MyWriter;
 import xlong.util.PropertiesUtil;
 

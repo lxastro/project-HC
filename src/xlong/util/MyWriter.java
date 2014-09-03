@@ -120,4 +120,11 @@ public class MyWriter {
 		System.err.println(str);
 	}
 	
+	@Override
+    protected void finalize() throws IOException {
+        if (curBufWriter != null) {
+        	close();
+        }
+    }
+	
 }
