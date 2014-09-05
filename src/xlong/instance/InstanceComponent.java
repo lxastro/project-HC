@@ -14,4 +14,9 @@ public interface InstanceComponent {
 	 */
 	boolean isLeaf();
 	
+	/**
+	 * @return the labels.
+	 */
+	Label[] getLabels();
+	
 }

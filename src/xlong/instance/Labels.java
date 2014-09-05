@@ -13,6 +13,8 @@ import java.util.Vector;
 public final class Labels {
 	/** delimiter. */
 	private static final String DELIMITER = " ";
+	/** delimiter in regular expression. */
+	private static final String DELIMITERREG = " ";
 	/** To store label texts. Associate IDs with their text. */
 	private static Vector<String> labelText;
 	/** Map from a text to corresponding label.*/
@@ -84,9 +86,9 @@ public final class Labels {
 	}
 	
 	/**
-	 * Change labels to string by their ID in order.
+	 * Change labels to one line string by their ID in order.
 	 * @param labelsPar the labels
-	 * @return the string
+	 * @return the one line string
 	 */
 	public static String labelsToString(final Collection<Label> labelsPar) {
 		TreeSet<Label> labelSet = new TreeSet<Label>(labelsPar);
@@ -99,5 +101,18 @@ public final class Labels {
 			str = str.append(DELIMITER + iterator.next().getID());
 		}
 		return str.toString();
+	}
+	
+	/**
+	 * @param s the one line string
+	 * @return the labels
+	 */
+	public static TreeSet<Label> loadFromString(final String s) {
+		TreeSet<Label> labelSet = new TreeSet<Label>();
+		String[] ss = s.split(DELIMITERREG);
+		for (String label:ss) {
+			labelSet.add(Labels.getLabel(label));
+		}
+		return labelSet;
 	}
 }
